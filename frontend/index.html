@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página Inicial</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sistema de Controle</h1>
+    <nav>
+      <!-- O link de cadastro de visitantes aparece para todos os usuários -->
+      <a id="linkVisitante" href="cadastroVisitante.html">Cadastro de Visitante</a>
+      <!-- O link de cadastro de funcionários só aparecerá se o usuário for administrador -->
+      <a id="linkFuncionario" href="cadastroFuncionario.html" style="display: none;">Cadastro de Funcionário</a>
+      <a id="linkLogout" href="#" onclick="logout()">Logout</a>
+    </nav>
+  </div>
+
+  <script>
+    // Função para decodificar o payload do token JWT
+    function getPayloadFromToken(token) {
+      try {
+        const payloadBase64 = token.split('.')[1];
+        const payloadDecoded = atob(payloadBase64);
+        return JSON.parse(payloadDecoded);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Verifica se o usuário está logado e se possui cargo de administrador
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const payload = getPayloadFromToken(token);
+        // Se o cargo for 'adm', exibe o link para cadastro de funcionários
+        if (payload && payload.role === 'adm') {
+          document.getElementById('linkFuncionario').style.display = 'inline';
+        } else {
+          document.getElementById('linkFuncionario').style.display = 'none';
+        }
+      } else {
+        // Se não estiver logado, redireciona para a página de login
+        window.location.href = 'login.html';
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

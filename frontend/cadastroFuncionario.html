@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Funcionário</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Cadastro de Funcionário</h2>
+    <form id="cadastroFuncionarioForm">
+      <input type="text" id="nomeFuncionario" placeholder="Nome do Funcionário" required>
+      <input type="email" id="emailFuncionario" placeholder="Email" required>
+      <input type="password" id="senhaFuncionario" placeholder="Senha" required>
+      <!-- Se desejar, um select para cargos -->
+      <select id="cargoFuncionario">
+        <option value="1">Administrador</option>
+        <option value="9">Funcionário</option>
+      </select>
+      <button type="submit">Cadastrar Funcionário</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('cadastroFuncionarioForm');
+      if (form) {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+          const nome = document.getElementById('nomeFuncionario').value;
+          const email = document.getElementById('emailFuncionario').value;
+          const senha = document.getElementById('senhaFuncionario').value;
+          const cargo = document.getElementById('cargoFuncionario').value;
+
+          fetch('http://localhost:8080/funcionarios/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              funcionario: {
+                nomeFuncionario: nome,
+                email: email,
+                senha: senha,
+                idCargo: cargo
+              }
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status) {
+              alert('Funcionário cadastrado com sucesso!');
+              window.location.href = 'index.html';
+            } else {
+              alert(data.msg);
+            }
+          })
+          .catch(error => console.error('Erro no cadastro de funcionário:', error));
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Visitante</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Cadastro de Visitante</h2>
+    <form id="cadastroVisitanteForm">
+      <input type="text" id="nomeVisitante" placeholder="Nome do Visitante" required>
+      <input type="text" id="rgVisitante" placeholder="RG" required>
+      <input type="text" id="empresaVisitante" placeholder="Empresa" required>
+      <input type="text" id="origemVisitante" placeholder="Origem" required>
+      <input type="datetime-local" id="entradaVisitante" required>
+      <input type="datetime-local" id="saidaVisitante" required>
+      <button type="submit">Cadastrar Visitante</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('cadastroVisitanteForm');
+
+      if (form) {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const nome = document.getElementById('nomeVisitante').value;
+          const rg = document.getElementById('rgVisitante').value;
+          const empresa = document.getElementById('empresaVisitante').value;
+          const origem = document.getElementById('origemVisitante').value;
+          const entrada = document.getElementById('entradaVisitante').value;
+          const saida = document.getElementById('saidaVisitante').value;
+
+          // 🔐 Recupera o token JWT do localStorage
+          const token = localStorage.getItem('token');
+
+          if (!token) {
+            alert("Erro: Você precisa estar logado para cadastrar um visitante.");
+            return;
+          }
+
+          fetch('http://localhost:8080/visitantes/', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': token // ✅ Adicionando o token JWT no cabeçalho
+            },
+            body: JSON.stringify({
+              visitante: {
+                nomeVisitante: nome,
+                rgVisitante: rg,
+                empresaVisitante: empresa,
+                origemVisitante: origem,
+                horarioEntrada: entrada,
+                horarioSaida: saida
+              }
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status) {
+              alert('Visitante cadastrado com sucesso!');
+              window.location.href = 'index.html';
+            } else {
+              alert(data.msg);
+            }
+          })
+          .catch(error => console.error('Erro no cadastro de visitante:', error));
+        });
+      }
+    });
+  </script>
+</body>
+</html>

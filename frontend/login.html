@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="senha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+          const email = document.getElementById('email').value;
+          const senha = document.getElementById('senha').value;
+
+          fetch('http://localhost:8080/funcionarios/login/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              funcionario: {
+                email: email,
+                senha: senha
+              }
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status) {
+              alert('Login bem-sucedido!');
+              localStorage.setItem('token', data.token);
+              window.location.href = 'index.html';
+            } else {
+              alert(data.msg);
+            }
+          })
+          .catch(error => console.error('Erro no login:', error));
+        });
+      }
+    });
+  </script>
+</body>
+</html>
