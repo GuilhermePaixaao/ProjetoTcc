@@ -9,10 +9,16 @@ module.exports = class CargoMiddleware {
         if (nomeCargo.length < 3) {
             const objResposta = {
                 status: false,
-                msg: "o nome deve possuir mais do que 3 caracteres"
+                msg: "O nome deve possuir mais do que 3 caracteres"
             }
             response.status(400).send(objResposta);
-        } else {
+        } else  if (!isNaN(nomeCargo)){
+            const objResposta = {
+                status: false,
+                msg: "O nome não deve possuir números"
+            }
+            response.status(400).send(objResposta);
+        }else{
             next();
         }
     }
