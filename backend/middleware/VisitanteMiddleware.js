@@ -7,13 +7,13 @@ module.exports = class VisitanteMiddleware {
     //Testes Para visitante{
     validar_nomeVisitante = async (request, response, next) => {
         const nomeVisitante = request.body.visitante.nomeVisitante;
-        const regex = /[^a-zA-ZÀ-ÖØ-öø-ÿ -]/;
+        const regexV = /[^a-zA-Z\u00C0-\u00FF -]/;
         if (!nomeVisitante || nomeVisitante.length < 3) {
             return response.status(400).send({
                 status: false,
                 msg: "O nome do visitante deve ter pelo menos 3 caracteres.",
             });
-        }else if(regex.test(nomeVisitante)){
+        }else if(regexV.test(nomeVisitante)){
             return response.status(400).send({
                 status:false,
                 msg:"Não pode conter números ou caracteres especiais."
