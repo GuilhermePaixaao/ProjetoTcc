@@ -46,11 +46,6 @@ module.exports = class VisitanteMiddleware {
                 status: false,
                 msg: "O horário de entrada deve ser informado.",
             });
-        }else if(!regexH.test(horarioEntrada)){
-            return response.status(400).send({
-                status: false,
-                msg: "O horário deve conter apenas números e no formato (xx:xx).",
-            });
         }
         next();
     };
